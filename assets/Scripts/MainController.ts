@@ -3,32 +3,35 @@ import {
   Component,
   director,
   Sprite,
-  NodeEventType,
   Prefab,
   instantiate,
   Node,
-  CCFloat,
   input,
   Input,
   EventMouse,
   Collider2D,
   Contact2DType,
   IPhysics2DContact,
+  Button,
 } from "cc";
 const { ccclass, property } = _decorator;
 import { ResultController } from "./ResultController";
 import { Bird } from "./Bird";
+import { BirdAudio } from "./BirdAudio";
 
-const minY: number = -74;
-const maxY: number = 85;
+const minY: number = -80; // -74
+const maxY: number = 70; //85
 
 @ccclass("MainController")
 export class MainController extends Component {
   @property({ type: Bird })
-  public bird: Bird;
+  private bird: Bird;
+
+  @property({ type: BirdAudio })
+  private birdAudio: BirdAudio;
 
   @property({ type: ResultController })
-  public result: ResultController;
+  private result: ResultController;
 
   @property({ type: Sprite })
   private spBg: Sprite[] = [null, null];
@@ -37,17 +40,24 @@ export class MainController extends Component {
   private spGround: Sprite[] = [null, null];
 
   @property({ type: Prefab })
-  public pipePrefab: Prefab = null;
+  private pipePrefab: Prefab = null;
 
   @property({ type: Node })
-  public pipeNode: Node = null;
+  private pipeNode: Node = null;
 
-  @property({ type: CCFloat, max: 10.0, min: 1.0 })
-  public pipeSpeed: number = 5.0;
+  @property({ type: Button })
+  private restBtn: Button = null;
+
+  @property({ type: Node })
+  private onVolume: Node;
+
+  @property({ type: Node })
+  private offVolume: Node;
 
   pipe: Node[] = [null, null, null];
 
-  private isOver: boolean;
+  private pipeSpeed: number = 2.0;
+  private isOver: boolean = false;
   private _isCreatePipes: boolean = false;
 
   onLoad() {
@@ -56,7 +66,7 @@ export class MainController extends Component {
     this.createPipe();
     this.movePipe();
     this.result.resetScore();
-    this.isOver = true;
+    this.offVolume.active = false;
   }
 
   initListener() {
@@ -64,13 +74,14 @@ export class MainController extends Component {
   }
 
   onMouseUp(event: EventMouse) {
-    if (this.isOver == true) {
-      this.resetGame();
-      this.bird.resetBird();
-      this.startGame();
-    } else if (this.isOver == false) {
-      if (event.getButton() === 0 || event.getButton() === 2) {
+    if (event.getButton() === 0 || event.getButton() === 2) {
+      if (this.isOver != true) {
         this.bird.flying();
+        this.birdAudio.onAudioQueue(0);
+      } else {
+        this.resetGame();
+        this.bird.resetBird();
+        this.startGame();
       }
     }
   }
@@ -101,6 +112,8 @@ export class MainController extends Component {
       this.spGround[i].node.setPosition(ground);
     }
 
+    // make bird rotate
+
     // create Pipes when starting
     if (this._isCreatePipes == true) {
       this.movePipe();
@@ -114,6 +127,7 @@ export class MainController extends Component {
   gameOver() {
     this.result.showResults();
     this.isOver = true;
+    this.birdAudio.onAudioQueue(3);
     director.pause();
   }
 
@@ -136,7 +150,7 @@ export class MainController extends Component {
       var posX = this.pipe[i].position.x;
       var posY = this.pipe[i].position.y;
 
-      posX = 400 + 350 * i;
+      posX = 450 + 250 * i;
       posY = minY + Math.random() * (maxY - minY);
 
       this.pipe[i].setPosition(posX, posY);
@@ -149,13 +163,15 @@ export class MainController extends Component {
       var posY = this.pipe[i].position.y;
 
       posX -= this.pipeSpeed;
-      const posBirdX = this.bird.node.position.x;
-      if (posX == posBirdX) {
+      //const posBirdX = this.bird.node.position.x;
+
+      if (posX == 0) {
         this.result.addScore();
+        this.birdAudio.onAudioQueue(1);
       }
 
-      if (posX <= -550) {
-        posX = 600;
+      if (posX <= -450) {
+        posX = 500;
         posY = minY + Math.random() * (maxY - minY);
       }
 
@@ -177,6 +193,7 @@ export class MainController extends Component {
     contact: IPhysics2DContact | null
   ) {
     this.bird.hit = true;
+    this.birdAudio.onAudioQueue(2);
   }
 
   birdStruck() {
@@ -196,5 +213,38 @@ export class MainController extends Component {
       const posY = minY + Math.random() * (maxY - minY);
       this.pipe[i].setPosition(posX, posY);
     }
+
+    for (let i = 0; i < this.spGround.length; i++) {
+      const ground = this.spGround[i].node.getPosition();
+      ground.x -= 1.0;
+      if (ground.x <= -940) {
+        ground.x = 940;
+      }
+      this.spGround[i].node.setPosition(ground);
+    }
+
+    for (let i = 0; i < this.spBg.length; i++) {
+      const bgPos = this.spBg[i].node.getPosition();
+      bgPos.x -= 1.0;
+      if (bgPos.x <= -940) {
+        bgPos.x = 940;
+      }
+      this.spBg[i].node.setPosition(bgPos);
+    }
+  }
+
+  resClickBtn() {
+    console.log("restart");
+    this.resetGame();
+  }
+
+  statsOnVolume() {
+    this.offVolume.active = true;
+    this.onVolume.active = false;
+  }
+
+  statsOffVolume() {
+    this.offVolume.active = false;
+    this.onVolume.active = true;
   }
 }
