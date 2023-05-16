@@ -12,6 +12,12 @@ export class ResultController extends Component {
   @property({ type: Button })
   private restartBtn: Button;
 
+  @property({ type: Button })
+  private onVolume: Button;
+
+  @property({ type: Button })
+  private offVolume: Button;
+
   private _maxScore: number = 0;
   private _currentScore: number = 0;
 
@@ -36,10 +42,13 @@ export class ResultController extends Component {
     this.highScore.string = "High Score: " + this._maxScore;
     this.restartBtn.node.active = true;
     this.highScore.node.active = true;
+    this.onVolume.node.active = true;
   }
 
   hideResults() {
     this.highScore.node.active = false;
     this.restartBtn.node.active = false;
+    this.onVolume.node.active = false;
+    this.offVolume.node.active = false;
   }
 }

@@ -12,7 +12,6 @@ import {
   Collider2D,
   Contact2DType,
   IPhysics2DContact,
-  Button,
 } from "cc";
 const { ccclass, property } = _decorator;
 import { ResultController } from "./ResultController";
@@ -45,15 +44,6 @@ export class MainController extends Component {
   @property({ type: Node })
   private pipeNode: Node = null;
 
-  @property({ type: Button })
-  private restBtn: Button = null;
-
-  @property({ type: Node })
-  private onVolume: Node;
-
-  @property({ type: Node })
-  private offVolume: Node;
-
   pipe: Node[] = [null, null, null];
 
   private pipeSpeed: number = 2.0;
@@ -66,11 +56,12 @@ export class MainController extends Component {
     this.createPipe();
     this.movePipe();
     this.result.resetScore();
-    this.offVolume.active = false;
   }
 
   initListener() {
     input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
+    // this.onVolume.on(Node.EventType.TOUCH_END, this.statsOnVolume, this);
+    // this.offVolume.on(Node.EventType.TOUCH_END, this.statsOffVolume, this);
   }
 
   onMouseUp(event: EventMouse) {
@@ -111,8 +102,6 @@ export class MainController extends Component {
       }
       this.spGround[i].node.setPosition(ground);
     }
-
-    // make bird rotate
 
     // create Pipes when starting
     if (this._isCreatePipes == true) {
@@ -201,7 +190,6 @@ export class MainController extends Component {
 
     if (this.bird.hit == true) {
       this.gameOver();
-      this.result.node.getChildByName("GameButton").active = true;
     }
   }
 
@@ -238,13 +226,23 @@ export class MainController extends Component {
     this.resetGame();
   }
 
-  statsOnVolume() {
-    this.offVolume.active = true;
-    this.onVolume.active = false;
-  }
+  // statsOnVolume() {
+  //   this.onVolume.active = true;
+  //   this.offVolume.active = false;
 
-  statsOffVolume() {
-    this.offVolume.active = false;
-    this.onVolume.active = true;
-  }
+  //   const birdAudioSource = this.birdAudio.getComponent(BirdAudio);
+  //   if (birdAudioSource) {
+  //     birdAudioSource.onAudioQueue(4);
+  //   }
+  // }
+
+  // statsOffVolume() {
+  //   this.onVolume.active = false;
+  //   this.offVolume.active = true;
+
+  //   const birdAudioSource = this.birdAudio.getComponent(BirdAudio);
+  //   if (birdAudioSource) {
+  //     birdAudioSource.onAudioQueue(null);
+  //   }
+  // }
 }
