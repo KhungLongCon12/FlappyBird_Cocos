@@ -111,7 +111,6 @@ export class MainController extends Component {
       this.birdStruck();
     }
   }
-
   gameOver() {
     this.result.showResults();
     this.isOver = true;
