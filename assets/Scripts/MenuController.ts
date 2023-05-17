@@ -3,11 +3,13 @@ const { ccclass, property } = _decorator;
 
 @ccclass("MenuController")
 export class MenuController extends Component {
-  @property({ type: Button })
-  private startBtn: Button = null;
+  @property({ type: Node })
+  private volume: Node | null = null;
 
   @property({ type: Sprite })
   private spBg: Sprite[] = [null, null];
+
+  private check: boolean = true; // set for onVolume
 
   onload() {}
 
@@ -23,7 +25,10 @@ export class MenuController extends Component {
   }
 
   startClickBtn() {
-    console.log("perfect");
+    console.log("start Btn");
     director.loadScene("game");
   }
+
+  handleVolumeOn() {}
+  handleVolumeOff() {}
 }
