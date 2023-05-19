@@ -44,6 +44,12 @@ export class MainController extends Component {
   @property({ type: Node })
   private pipeNode: Node = null;
 
+  // @property({ type: Collider2D })
+  // private topPipeCollider: Collider2D = null;
+
+  // @property({ type: Collider2D })
+  // private bottomPipeCollider: Collider2D = null;
+
   pipe: Node[] = [null, null, null];
 
   private pipeSpeed: number = 2.0;
@@ -60,8 +66,6 @@ export class MainController extends Component {
 
   initListener() {
     input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
-    // this.onVolume.on(Node.EventType.TOUCH_END, this.statsOnVolume, this);
-    // this.offVolume.on(Node.EventType.TOUCH_END, this.statsOffVolume, this);
   }
 
   onMouseUp(event: EventMouse) {
@@ -84,24 +88,10 @@ export class MainController extends Component {
 
   update(deltaTime: number) {
     //moving Background
-    for (let i = 0; i < this.spBg.length; i++) {
-      const bgPos = this.spBg[i].node.getPosition();
-      bgPos.x -= 1.0;
-      if (bgPos.x <= -940) {
-        bgPos.x = 940;
-      }
-      this.spBg[i].node.setPosition(bgPos);
-    }
+    this.movingBackground();
 
     //moving ground
-    for (let i = 0; i < this.spGround.length; i++) {
-      const ground = this.spGround[i].node.getPosition();
-      ground.x -= 1.0;
-      if (ground.x <= -940) {
-        ground.x = 940;
-      }
-      this.spGround[i].node.setPosition(ground);
-    }
+    this.movingGround();
 
     // create Pipes when starting
     if (this._isCreatePipes == true) {
@@ -113,6 +103,29 @@ export class MainController extends Component {
       this.birdStruck();
     }
   }
+
+  movingBackground() {
+    for (let i = 0; i < this.spBg.length; i++) {
+      const bgPos = this.spBg[i].node.getPosition();
+      bgPos.x -= 1.0;
+      if (bgPos.x <= -940) {
+        bgPos.x = 940;
+      }
+      this.spBg[i].node.setPosition(bgPos);
+    }
+  }
+
+  movingGround() {
+    for (let i = 0; i < this.spGround.length; i++) {
+      const ground = this.spGround[i].node.getPosition();
+      ground.x -= 1.0;
+      if (ground.x <= -940) {
+        ground.x = 940;
+      }
+      this.spGround[i].node.setPosition(ground);
+    }
+  }
+
   gameOver() {
     this.result.showResults();
     this.isOver = true;
@@ -181,8 +194,10 @@ export class MainController extends Component {
     otherCollider: Collider2D,
     contact: IPhysics2DContact | null
   ) {
+    console.log("1");
     this.bird.hit = true;
     this.birdAudio.onAudioQueue(2);
+    // this.bird.getComponent(Collider2D).apply();
   }
 
   birdStruck() {
@@ -202,23 +217,9 @@ export class MainController extends Component {
       this.pipe[i].setPosition(posX, posY);
     }
 
-    for (let i = 0; i < this.spGround.length; i++) {
-      const ground = this.spGround[i].node.getPosition();
-      ground.x -= 1.0;
-      if (ground.x <= -940) {
-        ground.x = 940;
-      }
-      this.spGround[i].node.setPosition(ground);
-    }
+    this.movingGround();
 
-    for (let i = 0; i < this.spBg.length; i++) {
-      const bgPos = this.spBg[i].node.getPosition();
-      bgPos.x -= 1.0;
-      if (bgPos.x <= -940) {
-        bgPos.x = 940;
-      }
-      this.spBg[i].node.setPosition(bgPos);
-    }
+    this.movingBackground();
   }
 
   resClickBtn() {
@@ -226,23 +227,7 @@ export class MainController extends Component {
     this.resetGame();
   }
 
-  // statsOnVolume() {
-  //   this.onVolume.active = true;
-  //   this.offVolume.active = false;
-
-  //   const birdAudioSource = this.birdAudio.getComponent(BirdAudio);
-  //   if (birdAudioSource) {
-  //     birdAudioSource.onAudioQueue(4);
-  //   }
-  // }
-
-  // statsOffVolume() {
-  //   this.onVolume.active = false;
-  //   this.offVolume.active = true;
-
-  //   const birdAudioSource = this.birdAudio.getComponent(BirdAudio);
-  //   if (birdAudioSource) {
-  //     birdAudioSource.onAudioQueue(null);
-  //   }
-  // }
+  homeBtn() {
+    director.loadScene("GameMenu");
+  }
 }

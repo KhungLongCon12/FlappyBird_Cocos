@@ -49,7 +49,7 @@ export class Bird extends Component {
     const birdRotateUp = () => {
       const rotationDuration = this.jumpDuration * 0.4;
       tween(this.node)
-        .to(rotationDuration, { eulerAngles: new Vec3(0, 0, 45) })
+        .to(rotationDuration, { eulerAngles: new Vec3(0, 0, 30) })
         .call(birdRotateDown)
         .start();
     };
@@ -57,7 +57,7 @@ export class Bird extends Component {
     const birdRotateDown = () => {
       const rotationDuration = this.jumpDuration * 0.6;
       tween(this.node)
-        .to(rotationDuration, { eulerAngles: new Vec3(0, 0, -30) })
+        .to(rotationDuration, { eulerAngles: new Vec3(0, 0, -10) })
         .start();
     };
 
