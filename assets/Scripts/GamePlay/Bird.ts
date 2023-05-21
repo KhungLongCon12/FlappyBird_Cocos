@@ -44,8 +44,6 @@ export class Bird extends Component {
   flying() {
     this.birdAnima.stop();
 
-    const targetY = this.node.position.y + this.jumpHeight;
-
     const birdRotateUp = () => {
       const rotationDuration = this.jumpDuration * 0.4;
       tween(this.node)

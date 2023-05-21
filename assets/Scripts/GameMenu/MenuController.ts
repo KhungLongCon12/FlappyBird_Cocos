@@ -3,6 +3,7 @@ import {
   Animation,
   AudioSource,
   Button,
+  color,
   Component,
   director,
   Node,
@@ -28,23 +29,19 @@ export class MenuController extends Component {
   @property({ type: Sprite })
   private spBg: Sprite[] = [null, null];
 
-  @property({ type: Node })
-  private MoveNode: Node = null;
+  // @property({ type: Node })
+  // private MoveNode: Node = null;
 
   @property({ type: Node })
   private AudioNode: Node = null;
 
   @property({ type: Node })
-  private birdAnim: Node | null = null;
+  private bird: Node | null = null;
 
   private check: boolean = true; // set for onVolume
 
-  protected onLoad(): void {
-    director.resume();
-  }
-
   start() {
-    let bird = this.birdAnim.getComponent(Animation);
+    let bird = this.bird.getComponent(Animation);
     bird.playOnLoad = true;
 
     this.onVolume.node.active = true;
@@ -77,9 +74,9 @@ export class MenuController extends Component {
     if (volume === 1) {
       console.log("true");
     } else console.log("false");
-    director.loadScene("game");
+    director.loadScene("GamePlay");
     //this.menuAudio.onAudioQueue(1);
-    director.addPersistRootNode(this.MoveNode);
+    //director.addPersistRootNode(this.MoveNode);
   }
 
   onClickVolume() {
@@ -99,5 +96,15 @@ export class MenuController extends Component {
     // this.audio.play();
     console.log("play");
     //this.offVolume.node.active = true;
+  }
+
+  handleChangeColor() {
+    const randColor = color(
+      Math.random() * 255,
+      Math.random() * 255,
+      Math.random() * 255
+    );
+    let birdColor = this.bird.getComponent(Sprite);
+    birdColor.color = randColor;
   }
 }

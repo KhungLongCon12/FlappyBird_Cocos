@@ -60,7 +60,7 @@ export class MainController extends Component {
     console.log("MainController is running");
     this.initListener();
     this.createPipe();
-    this.movePipe();
+    //this.movePipe();
     this.result.resetScore();
   }
 
@@ -74,9 +74,7 @@ export class MainController extends Component {
         this.bird.flying();
         this.birdAudio.onAudioQueue(0);
       } else {
-        this.resetGame();
-        this.bird.resetBird();
-        this.startGame();
+        this.resClickBtn();
       }
     }
   }
@@ -152,10 +150,18 @@ export class MainController extends Component {
       var posX = this.pipe[i].position.x;
       var posY = this.pipe[i].position.y;
 
-      posX = 450 + 250 * i;
+      posX = 450 + 350 * i;
       posY = minY + Math.random() * (maxY - minY);
 
-      this.pipe[i].setPosition(posX, posY);
+      // this.pipe[i].getComponent(Collider2D).apply();
+
+      this.pipe[i].setPosition(posX, posY, 0);
+
+      this.pipe[i].getChildByName("TopPipe").getComponent(Collider2D).apply();
+      this.pipe[i]
+        .getChildByName("BottomPipe")
+        .getComponent(Collider2D)
+        .apply();
     }
   }
 
@@ -178,6 +184,13 @@ export class MainController extends Component {
       }
 
       this.pipe[i].setPosition(posX, posY, 0);
+
+      this.pipe[i].getChildByName("TopPipe").getComponent(Collider2D).apply();
+      this.pipe[i]
+        .getChildByName("BottomPipe")
+        .getComponent(Collider2D)
+        .apply();
+      // console.log(this.pipe[i]);
     }
   }
 
@@ -197,7 +210,6 @@ export class MainController extends Component {
     console.log("1");
     this.bird.hit = true;
     this.birdAudio.onAudioQueue(2);
-    // this.bird.getComponent(Collider2D).apply();
   }
 
   birdStruck() {
@@ -225,9 +237,12 @@ export class MainController extends Component {
   resClickBtn() {
     console.log("restart");
     this.resetGame();
+    this.bird.resetBird();
+    this.startGame();
   }
 
   homeBtn() {
+    director.resume();
     director.loadScene("GameMenu");
   }
 }
