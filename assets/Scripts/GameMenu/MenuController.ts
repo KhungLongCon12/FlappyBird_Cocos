@@ -29,16 +29,11 @@ export class MenuController extends Component {
   @property({ type: Sprite })
   private spBg: Sprite[] = [null, null];
 
-  // @property({ type: Node })
-  // private MoveNode: Node = null;
-
   @property({ type: Node })
   private AudioNode: Node = null;
 
   @property({ type: Node })
   private bird: Node | null = null;
-
-  private check: boolean = true; // set for onVolume
 
   start() {
     let bird = this.bird.getComponent(Animation);
@@ -49,9 +44,6 @@ export class MenuController extends Component {
 
     if (this.onVolume.node.active == true) {
       this.audio.play();
-      console.log("true");
-    } else {
-      console.log("false");
     }
   }
 
@@ -67,35 +59,25 @@ export class MenuController extends Component {
   }
 
   startClickBtn() {
-    console.log("start Btn");
+    let volume = this.AudioNode.getComponent(AudioSource).volume; // stored volume to compare
 
-    let volume = this.AudioNode.getComponent(AudioSource).volume; // check volume
-    volume = 0;
-    if (volume === 1) {
-      console.log("true");
-    } else console.log("false");
     director.loadScene("GamePlay");
-    //this.menuAudio.onAudioQueue(1);
+    this.menuAudio.onAudioQueue(1);
     //director.addPersistRootNode(this.MoveNode);
   }
 
   onClickVolume() {
     this.offVolume.node.active = true;
     this.onVolume.node.active = false;
-    // this.menuAudio.muteVolume();
+
     this.audio.volume = 0;
-    //this.menuAudio.onAudioQueue(0);
-    // this.audio.pause();
-    console.log("stop");
   }
 
   offClickVolume() {
     this.onVolume.node.active = true;
     this.offVolume.node.active = false;
+
     this.audio.volume = 1;
-    // this.audio.play();
-    console.log("play");
-    //this.offVolume.node.active = true;
   }
 
   handleChangeColor() {
@@ -104,6 +86,7 @@ export class MenuController extends Component {
       Math.random() * 255,
       Math.random() * 255
     );
+
     let birdColor = this.bird.getComponent(Sprite);
     birdColor.color = randColor;
   }

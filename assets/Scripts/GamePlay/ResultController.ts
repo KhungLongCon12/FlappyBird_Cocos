@@ -10,25 +10,23 @@ export class ResultController extends Component {
   private highScore: Label;
 
   @property({ type: Button })
-  private restartBtn: Button;
-
-  @property({ type: Button })
-  private homeBtn: Button;
-
-  @property({ type: Button })
-  private onVolBtn: Button;
-
-  @property({ type: Button })
   private offVolBtn: Button;
 
   private _maxScore: number = 0;
   private _currentScore: number = 0;
+  private _checkStat: boolean = true; // onVolume auto on
 
-  start() {}
+  get checkStat() {
+    return this._checkStat;
+  }
+
+  set checkStat(value: boolean) {
+    this._checkStat = value;
+  }
 
   updateScore(score: number) {
     this._currentScore = score;
-    this.scoreLabel.string = " " + this._currentScore;
+    this.scoreLabel.string = ` ${this._currentScore}`;
   }
 
   resetScore() {
@@ -42,18 +40,22 @@ export class ResultController extends Component {
 
   showResults() {
     this._maxScore = Math.max(this._maxScore, this._currentScore);
-    this.highScore.string = "High Score: " + this._maxScore;
-    this.restartBtn.node.active = true;
-    this.highScore.node.active = true;
-    this.homeBtn.node.active = true;
-    this.onVolBtn.node.active = true;
+    this.highScore.string = `High Score  ${this._maxScore}`;
+
+    this.node.active = true;
+    const onStats = this.node.getChildByName("OnVolume");
+
+    if (this._checkStat === true) {
+      onStats.active = true;
+      console.log("_checkStat true");
+    } else {
+      this.offVolBtn.node.active = true;
+      console.log("_checkStat false");
+    }
   }
 
   hideResults() {
-    this.highScore.node.active = false;
-    this.restartBtn.node.active = false;
-    this.homeBtn.node.active = false;
-    this.onVolBtn.node.active = false;
+    this.node.active = false;
     this.offVolBtn.node.active = false;
   }
 }

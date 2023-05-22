@@ -17,7 +17,7 @@ export class Bird extends Component {
   @property({
     type: CCFloat,
   })
-  private jumpHeight: number = 100;
+  private jumpHeight: number = 50;
 
   @property({
     type: CCFloat,
@@ -55,7 +55,7 @@ export class Bird extends Component {
     const birdRotateDown = () => {
       const rotationDuration = this.jumpDuration * 0.6;
       tween(this.node)
-        .to(rotationDuration, { eulerAngles: new Vec3(0, 0, -10) })
+        .to(rotationDuration, { eulerAngles: new Vec3(0, 0, -45) })
         .start();
     };
 

@@ -12,6 +12,8 @@ import {
   Collider2D,
   Contact2DType,
   IPhysics2DContact,
+  Button,
+  AudioSource,
 } from "cc";
 const { ccclass, property } = _decorator;
 import { ResultController } from "./ResultController";
@@ -44,11 +46,14 @@ export class MainController extends Component {
   @property({ type: Node })
   private pipeNode: Node = null;
 
-  // @property({ type: Collider2D })
-  // private topPipeCollider: Collider2D = null;
+  @property({ type: Button })
+  private onVolume: Button = null;
 
-  // @property({ type: Collider2D })
-  // private bottomPipeCollider: Collider2D = null;
+  @property({ type: Button })
+  private offVolume: Button = null;
+
+  @property({ type: AudioSource })
+  private audio: AudioSource;
 
   pipe: Node[] = [null, null, null];
 
@@ -57,10 +62,8 @@ export class MainController extends Component {
   private _isCreatePipes: boolean = false;
 
   onLoad() {
-    console.log("MainController is running");
     this.initListener();
     this.createPipe();
-    //this.movePipe();
     this.result.resetScore();
   }
 
@@ -140,7 +143,6 @@ export class MainController extends Component {
   }
 
   createPipe() {
-    console.log("create Pipes");
     this._isCreatePipes = true;
 
     for (let i = 0; i < this.pipe.length; i++) {
@@ -153,15 +155,7 @@ export class MainController extends Component {
       posX = 450 + 350 * i;
       posY = minY + Math.random() * (maxY - minY);
 
-      // this.pipe[i].getComponent(Collider2D).apply();
-
       this.pipe[i].setPosition(posX, posY, 0);
-
-      this.pipe[i].getChildByName("TopPipe").getComponent(Collider2D).apply();
-      this.pipe[i]
-        .getChildByName("BottomPipe")
-        .getComponent(Collider2D)
-        .apply();
     }
   }
 
@@ -171,7 +165,6 @@ export class MainController extends Component {
       var posY = this.pipe[i].position.y;
 
       posX -= this.pipeSpeed;
-      //const posBirdX = this.bird.node.position.x;
 
       if (posX == 0) {
         this.result.addScore();
@@ -190,7 +183,6 @@ export class MainController extends Component {
         .getChildByName("BottomPipe")
         .getComponent(Collider2D)
         .apply();
-      // console.log(this.pipe[i]);
     }
   }
 
@@ -207,7 +199,6 @@ export class MainController extends Component {
     otherCollider: Collider2D,
     contact: IPhysics2DContact | null
   ) {
-    console.log("1");
     this.bird.hit = true;
     this.birdAudio.onAudioQueue(2);
   }
@@ -230,19 +221,33 @@ export class MainController extends Component {
     }
 
     this.movingGround();
-
     this.movingBackground();
   }
 
   resClickBtn() {
-    console.log("restart");
-    this.resetGame();
     this.bird.resetBird();
+    this.resetGame();
     this.startGame();
   }
 
   homeBtn() {
     director.resume();
     director.loadScene("GameMenu");
+  }
+
+  onClickVolume(check: boolean) {
+    this.offVolume.node.active = true;
+    this.onVolume.node.active = false;
+    this.audio.volume = 0;
+    this.result.checkStat = check;
+    console.log("on Click Game play");
+  }
+
+  offClickVolume(check: boolean) {
+    this.onVolume.node.active = true;
+    this.offVolume.node.active = false;
+    this.audio.volume = 1;
+    this.result.checkStat = check = true;
+    console.log("off Click Game play");
   }
 }
